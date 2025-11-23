@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from tracking.models import LocationData
 from devices.models import Device
+from django.contrib import messages
 from .models import LocationData
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
@@ -24,38 +25,36 @@ def location_history_view(request, device_id):
     locations = LocationData.objects.filter(device=device).order_by('-timestamp')
     return render(request, 'tracking/location_history.html', {'locations': locations, 'device': device})
 
-@require_POST
+@login_required
 def add_location_data(request):
-    try:
-        # Parse incoming JSON data
-        data = json.loads(request.body)
-        
-        # Extract required fields
-        device_id = data.get('device_id')
-        latitude = float(data.get('latitude'))
-        longitude = float(data.get('longitude'))
-        
-        # Optional fields
-        speed = data.get('speed')
-        accuracy = data.get('accuracy')
-        is_online = data.get('is_online', True)
+    # ✅ Use 'owner' instead of 'user' to match your Device model
+    user_devices = Device.objects.filter(owner=request.user)  # Fixed field name
 
-        # Validate the device exists
-        device = Device.objects.get(device_id=device_id)
-        
-        # Create and save the LocationData entry
-        LocationData.objects.create(
-            device=device,
-            latitude=latitude,
-            longitude=longitude,
-            speed=float(speed) if speed else None,
-            accuracy=float(accuracy) if accuracy else None,
-            is_online=is_online
-        )
-        
-        return JsonResponse({'status': 'success', 'message': 'Location saved'})
-        
-    except Device.DoesNotExist:
-        return JsonResponse({'status': 'error', 'message': 'Device not found'}, status=404)
-    except (json.JSONDecodeError, ValueError, KeyError) as e:
-        return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+    if request.method == 'POST':
+        device_id = request.POST.get('device')
+        latitude = request.POST.get('latitude')
+        longitude = request.POST.get('longitude')
+        speed = request.POST.get('speed', None)
+        accuracy = request.POST.get('accuracy', None)
+
+        try:
+            device = Device.objects.get(id=device_id, owner=request.user)
+            LocationData.objects.create(
+                device=device,
+                latitude=float(latitude),
+                longitude=float(longitude),
+                speed=float(speed) if speed else None,
+                accuracy=float(accuracy) if accuracy else None,
+                is_online=True
+            )
+            messages.success(request, 'Location data added successfully!')
+            return redirect('add_location_data')
+        except Device.DoesNotExist:
+            messages.error(request, 'Invalid device or you do not have permission.')
+        except Exception as e:
+            messages.error(request, f'Error adding location: {str(e)}')
+
+    context = {
+        'user_devices': user_devices,
+    }
+    return render(request, 'tracking/add_location_data.html', context)

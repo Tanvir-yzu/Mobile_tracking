@@ -51,6 +51,17 @@
 </div>
 {% endif %}
 
+
+{% if devices %}
+  <div class="mt-3">
+    <a href="{% url 'add_location_data' %}" class="btn btn-info">
+      ➕ Add Location Manually
+    </a>
+  </div>
+{% else %}
+  <p>You have no devices yet. <a href="{% url 'add_device' %}">Register a device</a>.</p>
+{% endif %}
+
 <style>
   .badge.bg-success { background-color: #28a745; }
   .badge.bg-secondary { background-color: #6c757d; }

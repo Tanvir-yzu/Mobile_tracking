@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Tracking System</title>
+    <title> Mobile Tracking System</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'dashboard' %}">Tracking System</a>
+            <a class="navbar-brand" href="{% url 'dashboard' %}">Mobile Tracking System</a>
             <div class="navbar-nav">
                 {% if user.is_authenticated %}
                     <a class="nav-link" href="{% url 'profile' %}">Profile</a>

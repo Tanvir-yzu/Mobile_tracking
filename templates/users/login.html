@@ -1,24 +1,80 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="row justify-content-center">
-  <div class="col-md-6">
-    <h2 class="text-center mb-4">Login</h2>
-    <form method="post">
-      {% csrf_token %}
-      <div class="mb-3">
-        <label for="{{ form.username.id_for_label }}" class="form-label">Username</label>
-        {{ form.username }}
-      </div>
-      <div class="mb-3">
-        <label for="{{ form.password.id_for_label }}" class="form-label">Password</label>
-        {{ form.password }}
-      </div>
-      <button type="submit" class="btn btn-primary w-100">Login</button>
-    </form>
-    <div class="text-center mt-3">
-      <p>Don't have an account? <a href="{% url 'register' %}">Register here</a></p>
-    </div>
-  </div>
-</div>
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+      <!-- Login Card -->
+      <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-body p-4">
+
+          <!-- Header / Title -->
+          <div class="text-center mb-4">
+            <h2 class="fw-bold text-primary">Login</h2>
+            <p class="text-muted">Sign in to your account</p>
+          </div>
+
+          <!-- Login Form -->
+          <form method="post">
+            {% csrf_token %}
+
+            <!-- Username Field -->
+            <div class="mb-3">
+              <label for="{{ form.username.id_for_label }}" class="form-label fw-semibold">
+                Username
+              </label>
+              {{ form.username }}
+              {% if form.username.errors %}
+                <div class="text-danger mt-1">
+                  {{ form.username.errors.0 }}
+                </div>
+              {% endif %}
+            </div>
+
+            <!-- Password Field -->
+            <div class="mb-3">
+              <label for="{{ form.password.id_for_label }}" class="form-label fw-semibold">
+                Password
+              </label>
+              {{ form.password }}
+              {% if form.password.errors %}
+                <div class="text-danger mt-1">
+                  {{ form.password.errors.0 }}
+                </div>
+              {% endif %}
+            </div>
+
+            <!-- Submit Button -->
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary btn-lg">
+                Login
+              </button>
+            </div>
+
+            <!-- Error Display (optional, for general form errors) -->
+            {% if form.non_field_errors %}
+              <div class="alert alert-danger mt-3" role="alert">
+                {% for error in form.non_field_errors %}
+                  {{ error }}
+                {% endfor %}
+              </div>
+            {% endif %}
+
+          </form>
+
+          <!-- Footer Links -->
+          <div class="text-center mt-4">
+            <p class="text-muted small">
+              Don't have an account?
+              <a href="{% url 'register' %}" class="text-decoration-none fw-semibold text-primary">
+                Register here
+              </a>
+            </p>
+          </div>
+
+        </div> <!-- card-body -->
+      </div> <!-- card -->
+    </div> <!-- col -->
+  </div> <!-- row -->
+</div> <!-- container -->
 {% endblock %}

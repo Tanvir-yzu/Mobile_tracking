@@ -1,32 +1,61 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Live Location Map</h2>
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      <!-- Page Title -->
+      <div class="text-center mb-4">
+        <h2 class="fw-bold text-primary">📍 Live Location Map</h2>
+        <p class="text-muted">Track the real-time locations of your devices on the map below.</p>
+      </div>
 
-<div id="map" style="height: 500px; width: 100%;"></div>
+      <!-- Optional: Info Alert -->
+      {% if not latest_locations %}
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+          <i class="bi bi-info-circle-fill"></i>
+          No location data available. Devices may not have reported their positions yet.
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      {% endif %}
 
-<script async defer
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBa4xHOMfR0Nv4wMHXIq7D7N4cZehfb_MI&callback=initMap">
-</script>
+      <!-- Map Container -->
+      <div class="card shadow-sm border-0 rounded-3">
+        <div class="card-body p-0">
+          <div id="map" style="height: 500px; width: 100%;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
+<!-- Google Maps API Script -->
+<script
+  async
+  defer
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBa4xHOMfR0Nv4wMHXIq7D7N4cZehfb_MI&callback=initMap"
+></script>
+
+<!-- Inline Map Initialization Script -->
 <script>
   function initMap() {
-    let center = { lat: 0, lng: 0 };
+    let center = { lat: 0, lng: 0 }; // Default center (World)
     const map = new google.maps.Map(document.getElementById("map"), {
       zoom: 2,
       center: center,
     });
 
     {% if latest_locations %}
+      // If we have location data, adjust map center & add markers
       {% with first_location=latest_locations|first %}
-        if ({{ latest_locations|length }} > 0) {
+        {% if latest_locations|length > 0 %}
           center = { 
             lat: {{ first_location.latitude }}, 
             lng: {{ first_location.longitude }} 
           };
           map.setCenter(center);
-          map.setZoom(10);
-        }
+          map.setZoom(10); // Zoom in a bit if we have data
+        {% endif %}
       {% endwith %}
 
       {% for location in latest_locations %}
@@ -34,10 +63,8 @@
           position: { lat: {{ location.latitude }}, lng: {{ location.longitude }} },
           map: map,
           title: "{{ location.device.name }}",
-          label: "{{ location.device.name|truncatechars:3 }}",
+          label: "{{ location.device.name|truncatechars:3 }}",  // e.g. "Dev"
         });
-      {% empty %}
-        console.log("No location data available.");
       {% endfor %}
     {% else %}
       console.log("No location data passed to the template.");

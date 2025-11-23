@@ -1,19 +1,148 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="row justify-content-center">
-  <div class="col-md-6">
-    <h2 class="text-center mb-4">Profile</h2>
-    <p><strong>Username:</strong> {{ user.username }}</p>
-    <p><strong>Email:</strong> {{ user.email }}</p>
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+      <!-- Profile Card -->
+      <div class="card shadow-sm border-0 rounded-3">
+        <div class="card-body p-4">
 
-    <div class="mt-4">
-      {% comment %} <a href="{% url 'password_change' %}" class="btn btn-primary">Change Password</a> {% endcomment %}
-    </div>
+          <!-- Header -->
+          <div class="text-center mb-4">
+            <h2 class="fw-bold text-primary">User Profile</h2>
+            <p class="text-muted">Manage your account details</p>
+          </div>
 
-    <div class="mt-3">
-      <a href="{% url 'dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
-    </div>
-  </div>
-</div>
+          <!-- User Info -->
+          <div class="mb-4">
+            <p><strong class="fw-semibold">Username:</strong> <span class="text-dark">{{ user.username }}</span></p>
+            <p><strong class="fw-semibold">Email:</strong> <span class="text-dark">{{ user.email }}</span></p>
+          </div>
+
+          <!-- 🔋 Simulated Battery Status -->
+          <div class="mb-4">
+            <h4>🔋 Simulated Device Battery Level: <span id="simBattery">--</span>%</h4>
+            <div class="progress mt-2" style="height: 25px;">
+              <div id="simBatteryBar" 
+                   class="progress-bar bg-warning" 
+                   role="progressbar" 
+                   style="width: 0%;" 
+                   aria-valuenow="0" 
+                   aria-valuemin="0" 
+                   aria-valuemax="100">
+                --
+              </div>
+            </div>
+            <p id="simBatteryStatus" class="mt-2"></p>
+          </div>
+
+          <!-- 🌐 Network Status -->
+          <div class="mb-4">
+            <h4>🌐 Network Status</h4>
+            <p><strong>Online:</strong> <span id="networkStatus" class="fw-semibold">Checking...</span></p>
+            <p><strong>Connection Type:</strong> <span id="connectionType" class="fw-semibold">📡 WiFi/以太网 (Unknown)</span></p>
+            <p><strong>Effective Type:</strong> <span id="effectiveType" class="fw-semibold">🔍 Not available</span></p>
+          </div>
+
+          <!-- Back to Dashboard -->
+          <div class="text-center">
+            <a href="{% url 'dashboard' %}" class="btn btn-secondary">
+              ← Back to Dashboard
+            </a>
+          </div>
+
+        </div> <!-- card-body -->
+      </div> <!-- card -->
+    </div> <!-- col -->
+  </div> <!-- row -->
+</div> <!-- container -->
+
+<script>
+  // ======================
+  // 🔋 Simulated Battery (for demo purposes)
+  // ======================
+  const batteryLevel = Math.floor(Math.random() * 101); // Random 0-100
+  document.getElementById('simBattery').textContent = batteryLevel;
+
+  const bar = document.getElementById('simBatteryBar');
+  bar.style.width = batteryLevel + '%';
+  bar.textContent = batteryLevel + '%';
+
+  bar.className = 'progress-bar';
+  const statusText = document.getElementById('simBatteryStatus');
+
+  if (batteryLevel > 50) {
+    bar.classList.add('bg-success');
+    statusText.textContent = '✅ Battery is Good';
+  } else if (batteryLevel > 20) {
+    bar.classList.add('bg-warning');
+    statusText.textContent = '⚠️ Battery is Getting Low';
+  } else {
+    bar.classList.add('bg-danger');
+    statusText.textContent = '🚨 Battery is Very Low!';
+  }
+
+  // ======================
+  // 🌐 Network Status (Online/Offline + Effective Type)
+  // ======================
+  function updateNetworkStatus() {
+    const isOnline = navigator.onLine;
+    const networkStatusEl = document.getElementById('networkStatus');
+    const connectionEl = document.getElementById('connectionType');
+    const effectiveTypeEl = document.getElementById('effectiveType');
+
+    if (isOnline) {
+      networkStatusEl.textContent = '🟢 Online';
+      networkStatusEl.className = 'fw-semibold text-success';
+    } else {
+      networkStatusEl.textContent = '🔴 Offline';
+      networkStatusEl.className = 'fw-semibold text-danger';
+    }
+
+    let connectionType = '📡 WiFi/以太网 (Unknown)'; // Default assumption
+    let effectiveType = '🔍 Not available';
+
+    if ('connection' in navigator) {
+      const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+      if (conn) {
+        // ⚠️ navigator.connection.type is NOT standardized → DON'T USE
+        // connectionType = conn.type || 'Unknown';
+
+        effectiveType = conn.effectiveType || '🔍 Not reported';
+
+        // Human-readable effectiveType
+        switch (effectiveType) {
+          case 'slow-2g':
+            effectiveType = '🐌 Slow 2G';
+            break;
+          case '2g':
+            effectiveType = '📡 2G';
+            break;
+          case '3g':
+            effectiveType = '📶 3G';
+            break;
+          case '4g':
+            effectiveType = '📶 4G';
+            break;
+          default:
+            effectiveType = '📶 ' + effectiveType; // e.g. '4g' or other
+        }
+      }
+    } else {
+      // Optional: Show that Network API is not available
+      connectionEl.textContent = '🔍 Network API not supported in this browser';
+    }
+
+    connectionEl.textContent = connectionType;
+    effectiveTypeEl.textContent = effectiveType;
+  }
+
+  // Run once on load
+  updateNetworkStatus();
+
+  // Update on online/offline events
+  window.addEventListener('online', updateNetworkStatus);
+  window.addEventListener('offline', updateNetworkStatus);
+</script>
 {% endblock %}

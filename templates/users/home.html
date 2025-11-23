@@ -1,21 +1,38 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="jumbotron text-center" style="background-color: #f8f9fa; padding: 50px;">
-  <h1 class="display-4">Welcome to the Tracking System</h1>
-  <p class="lead">Monitor and manage your devices in real-time.</p>
-  <hr class="my-4">
-  <p>Track GPS locations, set alerts, and control your devices from anywhere.</p>
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8 text-center">
+      <!-- Hero Section -->
+      <div>
+        <h1 class="display-4 fw-bold text-primary">Welcome to the Tracking System</h1>
+        <p class="lead text-muted mt-3 mb-4">
+          Monitor and manage your devices in real-time.
+        </p>
+        <hr class="my-4" style="border: 0; height: 1px; background: linear-gradient(to right, transparent, #dee2e6, transparent);">
+      </div>
 
-  <div class="mt-4">
-    {% if user.is_authenticated %}
-      <p>Hello, <strong>{{ user.username }}</strong>!</p>
-      <a class="btn btn-primary btn-lg" href="{% url 'dashboard' %}" role="button">Go to My Dashboard</a>
-    {% else %}
-      <p>Please login or register to start using the system.</p>
-      <a class="btn btn-primary btn-lg" href="{% url 'login' %}" role="button">Login</a>
-      <a class="btn btn-secondary btn-lg" href="{% url 'register' %}" role="button">Register</a>
-    {% endif %}
+      <!-- User Greeting or Auth Actions -->
+      <div class="mt-5">
+        {% if user.is_authenticated %}
+          <p class="lead fw-semibold text-dark">Hello, <span class="text-primary">{{ user.username }}</span>!</p>
+          <a href="{% url 'dashboard' %}" class="btn btn-primary btn-lg px-4 me-3">
+            🏠 Go to My Dashboard
+          </a>
+        {% else %}
+          <p class="lead text-muted mb-4">Please login or register to start using the system.</p>
+          <div>
+            <a href="{% url 'login' %}" class="btn btn-primary btn-lg px-4 me-3">
+              🔐 Login
+            </a>
+            <a href="{% url 'register' %}" class="btn btn-outline-secondary btn-lg px-4">
+              ➕ Register
+            </a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
   </div>
 </div>
 {% endblock %}

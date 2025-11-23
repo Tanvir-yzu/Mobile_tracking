@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -129,3 +130,11 @@ LOGIN_REDIRECT_URL = 'dashboard'
 LOGOUT_REDIRECT_URL = 'login'
 
 AUTH_USER_MODEL = 'users.CustomUser'
+
+JAZZMIN_SETTINGS = {
+    "site_title": "Mobile Tracking System",
+    "site_header": "Mobile Tracking System",
+    "site_brand": "Mobile Tracking System",
+    "copyright": "Mobile Tracking System",
+    "user_avatar": None,
+}
