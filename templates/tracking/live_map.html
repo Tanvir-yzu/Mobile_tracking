@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Live Location Map</h2>
+
+<div id="map" style="height: 500px; width: 100%;"></div>
+
+<script async defer
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBa4xHOMfR0Nv4wMHXIq7D7N4cZehfb_MI&callback=initMap">
+</script>
+
+<script>
+  function initMap() {
+    let center = { lat: 0, lng: 0 };
+    const map = new google.maps.Map(document.getElementById("map"), {
+      zoom: 2,
+      center: center,
+    });
+
+    {% if latest_locations %}
+      {% with first_location=latest_locations|first %}
+        if ({{ latest_locations|length }} > 0) {
+          center = { 
+            lat: {{ first_location.latitude }}, 
+            lng: {{ first_location.longitude }} 
+          };
+          map.setCenter(center);
+          map.setZoom(10);
+        }
+      {% endwith %}
+
+      {% for location in latest_locations %}
+        new google.maps.Marker({
+          position: { lat: {{ location.latitude }}, lng: {{ location.longitude }} },
+          map: map,
+          title: "{{ location.device.name }}",
+          label: "{{ location.device.name|truncatechars:3 }}",
+        });
+      {% empty %}
+        console.log("No location data available.");
+      {% endfor %}
+    {% else %}
+      console.log("No location data passed to the template.");
+    {% endif %}
+  }
+</script>
+{% endblock %}

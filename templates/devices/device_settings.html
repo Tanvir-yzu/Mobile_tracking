@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Edit Device: {{ form.instance.name }}</h2>
+
+<form method="post">
+  {% csrf_token %}
+  <div class="mb-3">
+    <label for="{{ form.name.id_for_label }}" class="form-label">Device Name</label>
+    {{ form.name }}
+  </div>
+  <div class="mb-3">
+    <label for="{{ form.tracking_interval.id_for_label }}" class="form-label">Tracking Interval (seconds)</label>
+    {{ form.tracking_interval }}
+  </div>
+  <div class="mb-3">
+    <label for="{{ form.is_tracking_active.id_for_label }}" class="form-label">Tracking Active</label>
+    {{ form.is_tracking_active }}
+  </div>
+  <button type="submit" class="btn btn-primary">Save Changes</button>
+  <a href="{% url 'device_list' %}" class="btn btn-secondary">Cancel</a>
+</form>
+
+<style>
+  /* Optional styling */
+  label {
+    font-weight: bold;
+  }
+</style>
+{% endblock %}

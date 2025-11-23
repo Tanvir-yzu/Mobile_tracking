@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="jumbotron text-center" style="background-color: #f8f9fa; padding: 50px;">
+  <h1 class="display-4">Welcome to the Tracking System</h1>
+  <p class="lead">Monitor and manage your devices in real-time.</p>
+  <hr class="my-4">
+  <p>Track GPS locations, set alerts, and control your devices from anywhere.</p>
+
+  <div class="mt-4">
+    {% if user.is_authenticated %}
+      <p>Hello, <strong>{{ user.username }}</strong>!</p>
+      <a class="btn btn-primary btn-lg" href="{% url 'dashboard' %}" role="button">Go to My Dashboard</a>
+    {% else %}
+      <p>Please login or register to start using the system.</p>
+      <a class="btn btn-primary btn-lg" href="{% url 'login' %}" role="button">Login</a>
+      <a class="btn btn-secondary btn-lg" href="{% url 'register' %}" role="button">Register</a>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

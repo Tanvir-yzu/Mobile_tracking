@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>My Devices</h2>
+
+{% if devices %}
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Device ID</th>
+      <th>Name</th>
+      <th>Tracking Interval (sec)</th>
+      <th>Is Active</th>
+      <th>Last Updated</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for device in devices %}
+    <tr>
+      <td>{{ device.device_id }}</td>
+      <td>{{ device.name }}</td>
+      <td>{{ device.tracking_interval }}</td>
+      <td>
+        {% if device.is_tracking_active %}
+          <span class="badge bg-success">Active</span>
+        {% else %}
+          <span class="badge bg-secondary">Inactive</span>
+        {% endif %}
+      </td>
+      <td>{{ device.last_updated }}</td>
+      <td>
+        <!-- View Live Map (Link to tracking/live-map/) -->
+        <a href="{% url 'live_map' %}" class="btn btn-sm btn-info">View Map</a>
+
+        <!-- Edit Device Settings -->
+        <a href="{% url 'device_settings' device.id %}" class="btn btn-sm btn-warning">Edit</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>You have no devices yet. Please register a device.</p>
+{% endif %}
+
+<style>
+  /* Optional: Better badge colors */
+  .badge.bg-success { background-color: #28a745; }
+  .badge.bg-secondary { background-color: #6c757d; }
+</style>
+{% endblock %}
