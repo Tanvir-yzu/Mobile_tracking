@@ -57,7 +57,7 @@
           map.setZoom(10); // Zoom in a bit if we have data
         {% endif %}
       {% endwith %}
-
+        const infoWindow = new google.maps.InfoWindow();
       {% for location in latest_locations %}
         new google.maps.Marker({
           position: { lat: {{ location.latitude }}, lng: {{ location.longitude }} },
