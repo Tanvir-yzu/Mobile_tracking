@@ -1,9 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from tracking.models import LocationData
 from devices.models import Device
 from django.contrib import messages
-from .models import LocationData
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 @login_required
