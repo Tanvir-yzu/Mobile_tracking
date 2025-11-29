@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'users',
     'devices',
     'tracking',
+    'dbbackup',  # django-dbbackup
 ]
 
 MIDDLEWARE = [
@@ -137,4 +138,24 @@ JAZZMIN_SETTINGS = {
     "site_brand": "Mobile Tracking System",
     "copyright": "Mobile Tracking System",
     "user_avatar": None,
+}
+
+STORAGES = {
+    # Default Django storage (required)
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+
+    # Staticfiles storage (required)
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+
+    # Your dbbackup storage
+    "dbbackup": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "OPTIONS": {
+            "location": "D:/Programming/TEST/Abbra/tracking_system/my/backup",  # Windows FIX: absolute path + backslashes
+        },
+    },
 }

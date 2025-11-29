@@ -6,6 +6,11 @@ __pycache__/
 
 # C extensions
 *.so
+# Database backups
+*.dump
+*.sql
+*.sqlite3-journal
+my/
 
 # Distribution / packaging
 .Python
